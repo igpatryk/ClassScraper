@@ -1,0 +1,19 @@
+services:
+  app:
+    env_file:
+      - app-variables.env
+    build: .
+    depends_on:
+      selenium:
+        condition: service_healthy
+    tty: true
+  selenium:
+    image: "seleniarm/standalone-chromium:114.0"
+    healthcheck:
+      test: ["CMD", "/opt/bin/check-grid.sh", "--host", "0.0.0.0", "--port", "4444"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    environment:
+      SE_SCREEN_WIDTH: 1920
+      SE_SCREEN_HEIGHT: 1080
